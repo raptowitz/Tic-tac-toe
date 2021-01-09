@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Gameboard for tic-tac-toe
+# Gameboard
 class Board
   def initialize
     @board = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
@@ -11,34 +11,25 @@ class Board
       puts row.join('|')
     end
   end
-end
 
-# Player moves
-class Player < Board
-  def player_move(player)
-    @player = player
-    puts "Player #{@player}, what is your move?"
-    @space = gets.to_i
-
-    if @space.between?(1, 3)
-      @board[0][@space - 1] = @player
-    elsif @space.between?(4, 6)
-      @board[1][@space - 4] = @player
-    elsif @space.between?(7, 9)
-      @board[2][@space - 7] = @player
-    end
+  def place_move(player_token)
+    @player_token = player_token
+    @board[@row][@column] = @player_token
   end
-end
 
-# Check victory
-class Score < Player
-  def play_game
-    until check_victory?
-      print_board
-      player_move('X')
-      print_board
-      player_move('O')
+  def available_space?(move)
+    @move = move
+    if @move.between?(1, 3)
+      @row = 0
+      @column = @move - 1
+    elsif @move.between?(4, 6)
+      @row = 1
+      @column = @move - 4
+    elsif @move.between?(7, 9)
+      @row = 2
+      @column = @move - 7
     end
+    @board[@row][@column].is_a?(Integer)
   end
 
   def row_victory?
@@ -70,11 +61,61 @@ class Score < Player
   def diagonol2_victory?
     @board[0][2] == @board[1][1] && @board[1][1] == @board[2][0]
   end
+end
 
-  def check_victory?
-    row_victory? || column_victory? || diagonol1_victory? || diagonol2_victory?
+# Players
+class Player
+  attr_reader :token
+  def initialize(token)
+    @token = token
+  end
+
+  def take_turn
+    puts "\nPlayer #{@token}, what is your move?"
+    @move = gets.to_i
+    until @move >= 1 && @move <= 9
+      puts 'Pick a space between 1-9!'
+      @move = gets.to_i
+    end
+    @move
   end
 end
 
-new_game = Score.new
+# Game
+class Game
+  def initialize(player1, player2, gameboard)
+    @player1 = player1
+    @player2 = player2
+    @gameboard = gameboard
+  end
+
+  def play_game
+    until check_victory?
+      @gameboard.print_board
+      until @gameboard.available_space?(@player1.take_turn)
+        puts 'Pick an available space!'
+        @player1.take_turn
+      end
+      @gameboard.place_move(@player1.token)
+      @gameboard.print_board
+      unless check_victory?
+        until @gameboard.available_space?(@player2.take_turn)
+          puts 'Pick an available space!'
+          @player2.take_turn
+        end
+        @gameboard.place_move(@player2.token)
+      end
+    end
+    puts "\nVictory!"
+  end
+
+  private
+
+  def check_victory?
+    @gameboard.row_victory? || @gameboard.column_victory? ||
+      @gameboard.diagonol1_victory? || @gameboard.diagonol2_victory?
+  end
+end
+
+new_game = Game.new(Player.new('X'), Player.new('O'), Board.new)
 new_game.play_game
