@@ -17,7 +17,6 @@ end
 class Player < Board
   def player_move(player)
     @player = player
-    print_board
     puts "Player #{@player}, what is your move?"
     @space = gets.to_i
 
@@ -33,26 +32,47 @@ end
 
 # Check victory
 class Score < Player
-  @victory = false
-
   def play_game
-    until @victory
+    until check_victory?
+      print_board
       player_move('X')
-      check_victory
+      print_board
       player_move('O')
-      check_victory
     end
   end
 
-  def check_victory
+  def row_victory?
     i = 0
-    while i < 3 do
+    while i < 3
       if @board[i][0] == @board[i][1] && @board[i][0] == @board[i][2]
-        @victory = true
-        puts 'Victory'
+        return true
       end
+
       i += 1
     end
+  end
+
+  def column_victory?
+    i = 0
+    while i < 3
+      if @board[0][i] == @board[1][i] && @board[1][i] == @board[2][i]
+        return true
+      end
+
+      i += 1
+    end
+  end
+
+  def diagonol1_victory?
+    @board[0][0] == @board[1][1] && @board[1][1] == @board[2][2]
+  end
+
+  def diagonol2_victory?
+    @board[0][2] == @board[1][1] && @board[1][1] == @board[2][0]
+  end
+
+  def check_victory?
+    row_victory? || column_victory? || diagonol1_victory? || diagonol2_victory?
   end
 end
 
