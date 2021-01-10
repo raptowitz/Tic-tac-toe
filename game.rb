@@ -12,13 +12,7 @@ class Board
     end
   end
 
-  def place_move(player_token)
-    @player_token = player_token
-    @board[@row][@column] = @player_token
-  end
-
-  def available_space?(move)
-    @move = move
+  def locate_move
     if @move.between?(1, 3)
       @row = 0
       @column = @move - 1
@@ -29,7 +23,17 @@ class Board
       @row = 2
       @column = @move - 7
     end
+  end
+
+  def available_space?(move)
+    @move = move
+    locate_move
     @board[@row][@column].is_a?(Integer)
+  end
+
+  def place_move(player_token)
+    @player_token = player_token
+    @board[@row][@column] = @player_token
   end
 
   def row_victory?
@@ -61,6 +65,10 @@ class Board
   def diagonol2_victory?
     @board[0][2] == @board[1][1] && @board[1][1] == @board[2][0]
   end
+
+  def tie?
+    @board.flatten.all? { |space| space.is_a?(String) }
+  end
 end
 
 # Players
@@ -90,30 +98,68 @@ class Game
   end
 
   def play_game
-    until check_victory?
+    puts "\nGame on!"
+    until game_over?
       @gameboard.print_board
-      until @gameboard.available_space?(@player1.take_turn)
-        puts 'Pick an available space!'
-        @player1.take_turn
-      end
-      @gameboard.place_move(@player1.token)
+      player1_move
       @gameboard.print_board
-      unless check_victory?
-        until @gameboard.available_space?(@player2.take_turn)
-          puts 'Pick an available space!'
-          @player2.take_turn
-        end
-        @gameboard.place_move(@player2.token)
-      end
+      break if game_over?
+
+      player2_move
+      @gameboard.print_board if game_over?
     end
-    puts "\nVictory!"
+    display_results
   end
 
   private
 
+  def player1_move
+    @player1_move = @player1.take_turn
+    if @gameboard.available_space?(@player1_move)
+      @gameboard.place_move(@player1.token)
+    else
+      until @gameboard.available_space?(@player1_move)
+        puts 'Pick an available space!'
+        @player1_move = @player1.take_turn
+      end
+    end
+    @gameboard.place_move(@player1.token)
+  end
+
+  def player2_move
+    @player2_move = @player2.take_turn
+    if @gameboard.available_space?(@player2_move)
+      @gameboard.place_move(@player2.token)
+    else
+      until @gameboard.available_space?(@player2_move)
+        puts 'Pick an available space!'
+        @player2_move = @player2.take_turn
+      end
+    end
+    @gameboard.place_move(@player2.token)
+  end
+
   def check_victory?
     @gameboard.row_victory? || @gameboard.column_victory? ||
       @gameboard.diagonol1_victory? || @gameboard.diagonol2_victory?
+  end
+
+  def game_over?
+    check_victory? || @gameboard.tie?
+  end
+
+  def display_results
+    if check_victory?
+      puts "\nVictory!"
+    else
+      puts "\nTie!"
+    end
+    new_game
+  end
+
+  def new_game
+    new_game = Game.new(Player.new('X'), Player.new('O'), Board.new)
+    new_game.play_game
   end
 end
 
