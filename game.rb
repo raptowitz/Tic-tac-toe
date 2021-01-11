@@ -15,11 +15,11 @@ class Game
     puts "\nGame on!"
     until game_over?
       @gameboard.print_board
-      player1_move
+      player_move(@player1)
       @gameboard.print_board
       break if game_over?
 
-      player2_move
+      player_move(@player2)
       @gameboard.print_board if game_over?
     end
     display_results
@@ -27,30 +27,22 @@ class Game
 
   private
 
-  def player1_move
-    @player1_move = @player1.take_turn
-    if @gameboard.available_space?(@player1_move)
-      @gameboard.place_move(@player1.token)
+  def player_move(player)
+    @player = player
+    @player_move = @player.take_turn
+    if @gameboard.available_space?(@player_move)
+      @gameboard.place_move(@player.token)
     else
-      until @gameboard.available_space?(@player1_move)
-        puts 'Pick an available space!'
-        @player1_move = @player1.take_turn
-      end
+      find_available_move
     end
-    @gameboard.place_move(@player1.token)
   end
 
-  def player2_move
-    @player2_move = @player2.take_turn
-    if @gameboard.available_space?(@player2_move)
-      @gameboard.place_move(@player2.token)
-    else
-      until @gameboard.available_space?(@player2_move)
-        puts 'Pick an available space!'
-        @player2_move = @player2.take_turn
-      end
+  def find_available_move
+    until @gameboard.available_space?(@player_move)
+      puts 'Pick an available space!'
+      @player_move = @player.take_turn
     end
-    @gameboard.place_move(@player2.token)
+    @gameboard.place_move(@player.token)
   end
 
   def game_over?
