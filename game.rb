@@ -60,7 +60,7 @@ class Game
 
   def new_game
     puts 'Play again? (y/n)'
-    if gets == 'y'
+    if gets.chomp == 'y'
       new_game = Game.new(Player.new('X'), Player.new('O'), Board.new)
       new_game.play_game
     else
