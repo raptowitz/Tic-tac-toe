@@ -51,14 +51,7 @@ class Board
   end
 
   def column_victory?
-    i = 0
-    while i < 3
-      if @board[0][i] == @board[1][i] && @board[1][i] == @board[2][i]
-        return true
-      end
-
-      i += 1
-    end
+    @board.transpose.any? { |columns| columns.uniq.length == 1 }
   end
 
   def diagonol1_victory?
