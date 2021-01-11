@@ -47,14 +47,7 @@ class Board
   private
 
   def row_victory?
-    i = 0
-    while i < 3
-      if @board[i][0] == @board[i][1] && @board[i][0] == @board[i][2]
-        return true
-      end
-
-      i += 1
-    end
+    @board.any? { |rows| rows.uniq.length == 1 }
   end
 
   def column_victory?

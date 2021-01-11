@@ -63,12 +63,17 @@ class Game
     else
       puts "\nTie!"
     end
-    new_game 
+    new_game
   end
 
   def new_game
-    new_game = Game.new(Player.new('X'), Player.new('O'), Board.new)
-    new_game.play_game
+    puts 'Play again? (y/n)'
+    if gets == 'y'
+      new_game = Game.new(Player.new('X'), Player.new('O'), Board.new)
+      new_game.play_game
+    else
+      puts 'Thanks for playing!'
+    end
   end
 end
 
