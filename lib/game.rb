@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'player.rb'
-require_relative 'board.rb'
-
 # Game
 class Game
   def initialize(player1, player2, gameboard)
@@ -69,5 +66,3 @@ class Game
   end
 end
 
-new_game = Game.new(Player.new('X'), Player.new('O'), Board.new)
-new_game.play_game
