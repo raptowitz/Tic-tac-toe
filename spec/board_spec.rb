@@ -22,5 +22,19 @@ describe Board do
         expect(output).to be true
       end
     end
+
+    context 'when the game is not over' do
+      before do
+        allow(end_game).to receive(:row_victory?).and_return false
+        allow(end_game).to receive(:column_victory?).and_return false
+        allow(end_game).to receive(:diagonal1_victory?).and_return false
+        allow(end_game).to receive(:diagonal2_victory?).and_return false
+      end
+
+      it 'returns false' do
+        output = end_game.check_victory?
+        expect(output).to be false
+      end
+    end
   end
 end
