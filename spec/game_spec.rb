@@ -26,4 +26,22 @@ describe Game do
       end
     end
   end
+
+  describe '#player_move' do
+    # Method with Outgoing Command -> Test that a message is sent
+    subject(:new_game) { described_class.new }
+    let(:player) { instance_double(Player, token: 'O') }
+    let(:board) { instance_double(Board) }
+
+    context 'when a gameboard space is available for a player move' do
+      before do
+        allow(board).to receive(:available_space?).and_return true
+      end
+
+      it 'sends place move to gameboard' do
+        expect(board).to receive(:place_move).with(player.token)
+        new_game.player_move(player.token)
+      end
+    end
+  end
 end

@@ -22,8 +22,6 @@ class Game
     display_results
   end
 
-  private
-
   def player_move(player)
     @player = player
     @player_move = @player.take_turn
