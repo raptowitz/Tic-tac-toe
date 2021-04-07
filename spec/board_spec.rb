@@ -5,6 +5,27 @@ require_relative '../lib/player'
 require_relative '../lib/board'
 
 describe Board do
+  describe '#available_space?' do
+    # Query Method -> Test the return value
+    subject(:new_game) { described_class.new }
+
+    context 'when the game board space is available' do
+      it 'returns true' do
+        output = new_game.available_space?(1)
+        expect(output).to be true
+      end
+    end
+
+    subject(:mid_game) { described_class.new([%w[x o x], [4, 5, 6], [7, 8, 9]]) }
+
+    context 'when the game board space is taken' do
+      it 'returns false' do
+        output = mid_game.available_space?(1)
+        expect(output).to be false
+      end
+    end
+  end
+
   describe '#place_move' do
     # Command Method -> Test the change in the observable state
     subject(:game) { described_class.new }
