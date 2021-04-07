@@ -31,9 +31,9 @@ class Board
     @board[@row][@column].is_a?(Integer)
   end
 
-  def place_move(player_token)
+  def place_move(player_token, row = @row, column = @column)
     @player_token = player_token
-    @board[@row][@column] = @player_token
+    @board[row][column] = @player_token
   end
 
   def check_victory?
