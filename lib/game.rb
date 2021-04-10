@@ -25,6 +25,10 @@ class Game
   def player_move(player)
     @player = player
     @player_move = @player.take_turn
+    check_available_space
+  end
+
+  def check_available_space
     if @gameboard.available_space?(@player_move)
       @gameboard.place_move(@player.token)
     else

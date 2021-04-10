@@ -16,7 +16,7 @@ describe Game do
 
     context 'when the game is over' do
       before do
-        allow(end_game).to receive(:puts)
+        allow(end_game).to receive(:puts).with("\nGame on!")
         allow(end_game).to receive(:game_over?).and_return true
       end
 
@@ -30,18 +30,15 @@ describe Game do
   describe '#player_move' do
     # Method with Outgoing Command -> Test that a message is sent
     subject(:new_game) { described_class.new }
-    let(:player) { instance_double(Player, token: 'O') }
-    let(:board) { instance_double(Board) }
+    let(:player) { instance_double(Player, token: 'X') }
 
-    context 'when a gameboard space is available for a player move' do
-      before do
-        allow(board).to receive(:available_space?).and_return true
-      end
+    before do
+      allow(new_game).to receive(:check_available_space)
+    end
 
-      it 'sends place move to gameboard' do
-        expect(board).to receive(:place_move).with(player.token)
-        new_game.player_move(player.token)
-      end
+    it 'sends take turn to player' do
+      expect(player).to receive(:take_turn)
+      new_game.player_move(player)
     end
   end
 end
