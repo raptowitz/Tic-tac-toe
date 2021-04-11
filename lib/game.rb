@@ -23,25 +23,16 @@ class Game
   end
 
   def player_move(player)
-    @player = player
-    @player_move = @player.take_turn
-    check_available_space
+    move = player.take_turn
+    place_move(player, move, player.token)
   end
 
-  def check_available_space
-    if @gameboard.available_space?(@player_move)
-      @gameboard.place_move(@player.token)
-    else
-      find_available_move
-    end
-  end
-
-  def find_available_move
-    until @gameboard.available_space?(@player_move)
+  def place_move(player, move, token)
+    until @gameboard.available_space?(move)
       puts 'Pick an available space!'
-      @player_move = @player.take_turn
+      move = player.take_turn
     end
-    @gameboard.place_move(@player.token)
+    @gameboard.place_move(token)
   end
 
   def game_over?
