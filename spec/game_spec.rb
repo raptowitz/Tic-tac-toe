@@ -44,7 +44,7 @@ describe Game do
 
   describe '#place_move' do
     # Method with Outgoing Command -> Test that a message is sent
-    let(:player) { instance_double(Player, token: 'X') }
+    let(:player) { instance_double(Player, token: 'O') }
     let(:board) { instance_double(Board) }
     subject(:new_game) { described_class.new(player, player, board) }
 
